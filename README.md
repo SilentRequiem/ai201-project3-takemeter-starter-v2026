@@ -48,39 +48,43 @@
 
 ## Label Taxonomy
 
-<!-- Each label: a one-sentence definition and two real examples from your
-     reading. Then your decision rule for the hardest boundary.
+### `analysis`
 
-     The decision rule is worth a point on its own and it's the thing most
-     people leave out. Every taxonomy has a hardest boundary. Name yours. -->
-
-### `label_one`
-
-**Definition:**
+**Definition:** A post that develops an opinion, review, or argument about a game or JRPG topic using specific reasons, mechanics, story details, or comparisons.
 
 **Example 1:**
->
+> Romancing SaGa 1 Minstrel Song Review
 
 **Example 2:**
->
+> Nocturne is one of the best games this year
 
-### `label_two`
+### `request`
 
-**Definition:**
+**Definition:** A post whose main goal is getting a recommendation, answer, choice, or practical help from other users.
 
 **Example 1:**
->
+> Games like Xenogears, Nier/Drakengard, Stellar Blade
 
 **Example 2:**
->
+> Tactics Ogre vs Final Fantasy Tactics. Which to play first.
+
+### `community_discussion`
+
+**Definition:** A post mainly meant to start conversation, share a reaction or appreciation, report community-relevant news, or invite opinions without building a sustained argument or asking for a personal decision.
+
+**Example 1:**
+> Who are the biggest benchwarmers in JRPG history?
+
+**Example 2:**
+> The disparities between sprites and their portraits always gives me a good laugh
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `analysis` and `community_discussion`
 
-**The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+**The decision rule I used every time:** If the author makes an evaluative claim and supports it with specific reasons about gameplay, story, mechanics, design, or comparisons, I label it `analysis`. If the post mainly shares a reaction, appreciation, joke, news item, or open-ended prompt without developing that reasoning, I label it `community_discussion`.
+
+For `request`, I use one extra rule: if the author needs the comments to give them an answer, recommendation, or decision, I label it `request`, even if the post includes a lot of context.
 
 
 
