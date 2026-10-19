@@ -39,10 +39,7 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
-
-
+TakeMeter is a text classifier trained on public posts from r/JRPG. It sorts each post into one of three categories: `analysis`, `request`, or `community_discussion`. I chose these labels because the community has a mix of detailed reviews and arguments, people asking for recommendations or help, and lighter discussion or reaction posts. The goal is to see whether a small fine-tuned model can learn those differences from the way the posts are written.
 
 ---
 
@@ -92,91 +89,73 @@ For `request`, I use one extra rule: if the author needs the comments to give th
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
+**Where the posts came from:** Public posts from r/JRPG.
 
-**Where the posts came from:**
-
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** I labelled the first 40 posts cold without AI help. After that, I used AI to pre-label the remaining posts, then read and reviewed every suggested label myself before keeping it. I also checked the final CSV for duplicate rows and formatting problems before training.
 
 **Counts per label:**
 
 | Label | Count | Share |
-|---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+|---|---:|---:|
+| `analysis` | 50 | 25.0% |
+| `request` | 61 | 30.5% |
+| `community_discussion` | 89 | 44.5% |
+| **Total** | **200** | **100%** |
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* Tactics Ogre vs Final Fantasy Tactics. Which to play first.
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `request`
 >
-> *I chose, because:*
+> *I chose, because:* `request`. The post includes a lot of detailed opinions and comparisons, but the main purpose is still to get help deciding which game to play first.
 
 **2.**
-> *The post:*
+> *The post:* Nocturne is one of the best games this year.
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `community_discussion`
 >
-> *I chose, because:*
+> *I chose, because:* `analysis`. The title sounds like a reaction post, but the body explains the claim with specific points about the combat, music, visuals, level design, and story.
 
 **3.**
-> *The post:*
+> *The post:* What are the best linear JRPGs in your opinion?
 >
-> *Could have been:*
+> *Could have been:* `request` or `community_discussion`
 >
-> *I chose, because:*
+> *I chose, because:* `request`. Even though it invites opinions from the community, the poster is mainly asking people to suggest games that match a specific preference.
 
 ---
 
 ## The Training Run
 
-<!-- Your starting model, your settings, and anything you changed and why. -->
+**Base model:** `distilbert-base-uncased`
 
-**Base model:**
+**Settings:** 3 epochs, learning rate `2e-5`, batch size 16, seed 42, and max length 128 tokens.
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Anything I changed from the defaults, and why:** I kept the default training hyperparameters. I only changed the label list to match my taxonomy: `analysis`, `request`, and `community_discussion`.
 
-**Anything I changed from the defaults, and why:**
+**Split sizes:** 139 training posts, 31 validation posts, and 30 test posts. The test split contains 8 `analysis`, 9 `request`, and 13 `community_discussion` posts.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
-
-
+**Device:** CPU on Windows using PyTorch 2.14.1+cpu.
 
 ---
 
 ## How I Used AI
 
-<!-- Two specific moments — what you asked, what came back, what you changed.
-
-     ⚠️ Plus disclosure of any pre-labelling. If you had a model pre-label a
-     batch and then read and corrected every one, say that. It's an allowed
-     workflow and disclosing it costs you nothing. Not disclosing it is the
-     problem. -->
-
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I shared the candidate distinctions I noticed while reading r/JRPG and asked for help stress-testing where the boundaries were unclear.
+- *What came back:* AI suggested a three-label taxonomy and pointed out that a long post can still be a `request` if its main purpose is getting an answer or recommendation.
+- *What I changed:* I kept the three labels `analysis`, `request`, and `community_discussion`, and used a specific decision rule to separate detailed analysis from lighter discussion.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* After I labelled the first 40 posts myself, I used AI to pre-label later batches so I could review them faster.
+- *What came back:* AI returned suggested labels, flagged ambiguous cases, and helped catch duplicate rows and CSV quoting problems.
+- *What I changed:* I read and reviewed every pre-labelled row, kept or corrected the label based on my taxonomy, and used a cleaned 200-row CSV for training.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** The first 40 rows were labelled cold by me. The remaining 160 rows were AI pre-labelled and then reviewed by me before training.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
