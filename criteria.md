@@ -51,65 +51,50 @@ whether you hit them:
 
 ---
 
-## 1.
+## 1. Overall accuracy
 
-<!-- Your criterion. It must name a number. -->
-
-
+Across the held-out test set, TakeMeter should reach an overall accuracy of at least 0.80.
 
 **Why this target:**
-
-
+With three labels, random guessing would only be around 33%, so I want the classifier to be correct much more often than chance. I chose 0.80 because I would only consider the classifier useful if it can correctly sort most JRPG posts.
 
 ---
 
-## 2.
+## 2. Per-label performance
 
-<!-- Your criterion. -->
-
-
+Each of the three labels — `analysis`, `request`, and `community_discussion` — should have an F1 score of at least 0.70.
 
 **Why this target:**
-
-
+I do not want a high overall accuracy score to hide one label that performs badly. I chose 0.70 because each category should work reasonably well on its own, even though some labels may have fewer examples than others.
 
 ---
 
-## 3.
+## 3. Dataset balance
 
-<!-- Your criterion. -->
-
-
+No single label should make up more than 65% of `labels.csv`.
 
 **Why this target:**
-
-
+If one label dominates the dataset, the classifier could learn to guess that label instead of learning the differences between my categories. I chose 65% because it stays below the project's 70% maximum while still allowing the natural distribution of posts to be uneven.
 
 ---
 
-## 4.
+## 4. Labeling consistency
 
-<!-- Your criterion. -->
-
-
+My agreement rate on the Unit 6 consistency check should be at least 80%.
 
 **Why this target:**
-
-
+The taxonomy should be clear enough that the same rules can be applied consistently instead of depending on how I feel about a post at the time. I chose 80% because I expect some borderline posts, especially between `analysis` and `community_discussion`, but most posts should still be classified consistently.
 
 ---
 
-## 5.
+## 5. Confidence usefulness
 
-<!-- Your criterion. -->
-
-
+The accuracy of TakeMeter's most-confident third of predictions should be at least 15 percentage points higher than the accuracy of its least-confident third.
 
 **Why this target:**
+If confidence means anything, the predictions the model is most sure about should be noticeably more reliable than the ones it is unsure about. I chose a 15-point gap because I want confidence to provide useful information instead of just being a number attached to every prediction.
 
-
-
----
+--- 
 
 <!-- ─────────────────────────────────────────────────────────────────────────
      UNIT 6 — read this before you change anything above.
