@@ -238,40 +238,35 @@ I labeled all 30 posts using the staff taxonomy before comparing against the sta
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** I changed one training setting only: `EPOCHS` from 3 to 5. The learning rate, batch size, max length, labels, taxonomy, dataset, and three seeds stayed unchanged.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The before-run model was collapsing toward `community_discussion`, but my staff agreement check was 30/30, so I did not have evidence that loose rule-following was the main problem. I therefore tested whether the model simply needed more passes through the same 200 examples.
 
 ### Run Log — After
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+|---|---|---:|---:|---:|---|
+| 1. Overall accuracy | ≥ 0.80 | 0.567 | 0.433 | 0.667 | MISSED |
+| 2. Every label F1 | ≥ 0.70 | min 0.000 | min 0.000 | min 0.222 | MISSED |
+| 3. Dataset balance | largest label ≤ 65% | 44.5% | 44.5% | 44.5% | MET |
+| 4. Labeling consistency | ≥ 80% agreement | 100% | 100% | 100% | MET |
+| 5. Confidence usefulness | most-confident third ≥ least-confident third + 15 pts | +60 pts | +60 pts | +50 pts | MET |
 
-**Did it help, and how do I know:**
+**Did it help, and how do I know:** Yes, but only partially. Average accuracy across the three seeds rose from about 0.467 before to 0.556 after, and average macro F1 rose from about 0.258 to 0.398. Seed 42 improved from 0.433 to 0.567 accuracy and seed 2024 improved from 0.533 to 0.667, while seed 7 stayed at 0.433 and still predicted every test post as `community_discussion`. The change therefore improved the model on two splits, but it did not make the classifier reliable across seeds.
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
-
-
+The accuracy spread after the change was about 0.233, compared with 0.100 before. That larger spread means the five-epoch model is more sensitive to which examples land in the train and test splits.
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+Criteria 1 and 2 are still missed. Overall accuracy never reached the 0.80 target on any seed, and no seed reached F1 ≥ 0.70 for every label. The biggest remaining problem is `analysis`: its F1 after the change was 0.000, 0.000, and 0.222. `request` improved on seeds 42 and 2024, but seed 7 still collapsed completely.
 
+If I continued, I would focus on the `analysis` class rather than changing several settings at once. I would collect more clearly reasoned `analysis` examples and inspect borderline `analysis` versus `community_discussion` rows, then measure that as a separate experiment. I stopped after the five-epoch rerun because the assignment asks for one measured improvement, and adding another change would make it impossible to attribute the result cleanly.
 
+**The gap between what I meant my labels to capture and what the model learned:** I intended `analysis` to mean a supported opinion or argument, `request` to mean asking for help or recommendations, and `community_discussion` to cover lighter conversation and reactions. The confusion matrices show that the model learned `community_discussion` most strongly and only began learning `request` on some splits, while it still failed to reliably learn `analysis`.
 
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
-
-
+---
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
