@@ -155,6 +155,12 @@ For `request`, I use one extra rule: if the author needs the comments to give th
 - *What came back:* AI returned suggested labels, flagged ambiguous cases, and helped catch duplicate rows and CSV quoting problems.
 - *What I changed:* I read and reviewed every pre-labelled row, kept or corrected the label based on my taxonomy, and used a cleaned 200-row CSV for training.
 
+**Moment 3**
+
+- *What I asked for:* I shared my three-seed before and after results and asked AI to compare them against the criteria without changing the targets.
+- *What came back:* AI calculated the before/after pattern, pointed out that five epochs improved average accuracy and macro F1 on two seeds, but that seed 7 still collapsed and `analysis` remained the weakest label.
+- *What I changed:* I did not change the experiment after seeing that analysis. I used it to write the verdicts, diagnosis, and What's Still Broken sections while keeping the one-improvement rule intact.
+
 **Pre-labelling disclosure:** The first 40 rows were labelled cold by me. The remaining 160 rows were AI pre-labelled and then reviewed by me before training.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
