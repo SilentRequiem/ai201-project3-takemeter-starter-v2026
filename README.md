@@ -166,58 +166,41 @@ For `request`, I use one extra rule: if the author needs the comments to give th
 
 ## Baseline vs. Trained
 
-<!-- Both models on the same posts. `python baseline.py --trained results.json`
-     prints this table for you. -->
-
 | Measure | Baseline | Trained | Difference |
-|---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+|---|---:|---:|---:|
+| Overall accuracy | 0.333 | 0.433 | +0.100 |
+| Macro F1 | 0.262 | 0.202 | -0.061 |
+| F1 — `analysis` | 0.444 | 0.000 | -0.444 |
+| F1 — `community_discussion` | 0.143 | 0.605 | +0.462 |
+| F1 — `request` | 0.200 | 0.000 | -0.200 |
 
-**What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+**What I predicted before I looked:** I expected the trained model to do best on `request` posts because recommendation and help-seeking language seemed like something it could learn from my labeled examples.
 
-**What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
-
-
+**What the gap actually means:** Fine-tuning improved overall accuracy by 10 percentage points, but it did not improve the classifier evenly. The trained model became much better at `community_discussion` while performing worse than the zero-shot baseline on both `analysis` and `request`, which is why its macro F1 dropped even though its overall accuracy increased.
 
 ---
 
 ## Run Log — Before
 
-<!-- Five criteria across three seeds. The notebook's section 6 prints the
-     spread table; the Target and Verdict columns are yours. -->
-
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+|---|---|---:|---:|---:|---|
+| 1. Overall accuracy | ≥ 0.80 | 0.433 | 0.433 | 0.533 | MISSED |
+| 2. Every label F1 | ≥ 0.70 | min 0.000 | min 0.000 | min 0.000 | MISSED |
+| 3. Dataset balance | largest label ≤ 65% | 44.5% | 44.5% | 44.5% | MET |
+| 4. Labeling consistency | ≥ 80% agreement | pending agreement check | pending | pending | PENDING |
+| 5. Confidence usefulness | most-confident third ≥ least-confident third + 15 pts | +70 pts | +40 pts | +30 pts | MET |
+
+Accuracy moved 0.100 across the three seeds. That is right at the assignment's warning threshold, so the exact score is sensitive to the split even though all three runs show the same broader problem.
 
 ### Confusion matrix
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+| true \\ predicted | analysis | request | community_discussion |
+|---|---:|---:|---:|
+| **analysis** | 0 | 0 | 8 |
+| **request** | 0 | 0 | 9 |
+| **community_discussion** | 0 | 0 | 13 |
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
-
-**My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
-
-
+**My biggest off-diagonal number, and what it means:** 9 real `request` posts were called `community_discussion`, while no `community_discussion` posts were called `request`. On seed 42 the model leaned completely toward `community_discussion` instead of learning the request/discussion boundary.
 
 ---
 
