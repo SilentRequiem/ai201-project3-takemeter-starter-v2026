@@ -187,7 +187,7 @@ For `request`, I use one extra rule: if the author needs the comments to give th
 | 1. Overall accuracy | ≥ 0.80 | 0.433 | 0.433 | 0.533 | MISSED |
 | 2. Every label F1 | ≥ 0.70 | min 0.000 | min 0.000 | min 0.000 | MISSED |
 | 3. Dataset balance | largest label ≤ 65% | 44.5% | 44.5% | 44.5% | MET |
-| 4. Labeling consistency | ≥ 80% agreement | pending agreement check | pending | pending | PENDING |
+| 4. Labeling consistency | ≥ 80% agreement | 100% | 100% | 100% | MET |
 | 5. Confidence usefulness | most-confident third ≥ least-confident third + 15 pts | +70 pts | +40 pts | +30 pts | MET |
 
 Accuracy moved 0.100 across the three seeds. That is right at the assignment's warning threshold, so the exact score is sensitive to the split even though all three runs show the same broader problem.
@@ -206,83 +206,33 @@ Accuracy moved 0.100 across the three seeds. That is right at the assignment's w
 
 ## Verdicts and Diagnoses
 
-<!-- MET or MISSED against LAST UNIT's target. The target has to hold across
-     all three seeds, not turn up sometimes. -->
-
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.80 | MISSED | Accuracy was 0.433, 0.433, and 0.533. None of the three seeds reached 0.80. |
+| 2 | Per-label performance | Every label F1 ≥ 0.70 | MISSED | The minimum label F1 was 0.000 in all three seeds. `analysis` had F1 0.000 every time, and `request` was 0.000, 0.000, and 0.429. |
+| 3 | Dataset balance | No label above 65% | MET | The largest class, `community_discussion`, is 89 of 200 posts, or 44.5%. |
+| 4 | Labeling consistency | Agreement ≥ 80% | MET | I matched the staff labels on all 30 staff-taxonomy posts, for 100% agreement. |
+| 5 | Confidence usefulness | Most-confident third at least 15 points better than least-confident third | MET | The confidence gaps were +70, +40, and +30 percentage points across seeds 42, 7, and 2024. |
 
 **Diagnoses**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+**Criterion 1 — MISSED:** The model did not learn all three classes well enough from this training setup. The confusion matrix for seed 42 shows every test example being predicted as `community_discussion`, and seed 7 shows the same pattern. Seed 2024 improves to 0.533 accuracy but still never predicts `analysis` correctly. My 100% staff agreement does not point to a general rule-application consistency problem, so the stronger evidence is that the trained classifier is under-learning the minority classes.
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+**Criterion 2 — MISSED:** `analysis` is the clearest failure. Its F1 is 0.000 on all three seeds, even though the dataset contains 50 analysis examples. `request` is also weak, with F1 0.000 on two seeds and 0.429 on seed 2024. The seed-42 matrix shows 8 real `analysis` posts and 9 real `request` posts all being absorbed into `community_discussion`. Because the agreement check was 30/30 under an external written taxonomy, I do not have evidence that inconsistent rule-following is the main cause. The more likely issue is that 200 examples and the current three-epoch training setup were not enough for the model to separate these boundaries reliably.
 
-
+No diagnosis is needed for Criteria 3, 4, or 5 because they were met.
 
 ---
 
 ## Agreement Report
 
-<!-- Your rate against the staff set, and every disagreement adjudicated.
+**Agreement rate:** 30 / 30 = 100%
 
-     Remember you labelled these 30 under the STAFF taxonomy in
-     data/staff_taxonomy.md, not your own — so every argument below is made
-     from those definitions and those decision rules. -->
+I labeled all 30 posts using the staff taxonomy before comparing against the staff answer key. My labels matched staff on every post, so there were no disagreements to adjudicate.
 
-**Agreement rate:** ___ / 30 = ___%
+**Disagreements:** None.
 
-<!-- Nobody grades this number. A 60% who argues every disagreement from the
-     stated rules beats a 95% who wrote "staff was right" nine times. Several
-     of the 30 were chosen because they're genuinely ambiguous — you should be
-     winning some of these. -->
-
-**Disagreements**
-
-<!-- Three lines each: the post, both labels, and who you think is right and
-     why — grounded in the staff definitions you were both applying.
-
-     Then sort each into one of three piles:
-       (a) the rule covered it and I applied it loosely → a consistency problem
-       (b) the rule genuinely doesn't say               → a gap in the definitions
-       (c) the rule is ambiguous here and my reading is defensible → argue it.
-           This is a legitimate win.
-
-     Pile (a) is the one that matters most for your diagnosis: if you applied a
-     written rule two different ways on 30 posts, that is direct evidence about
-     what you did across your own 200. -->
-
-**1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**What the pattern in my disagreements tells me:**
-
-
+**What the pattern in my disagreements tells me:** There was no disagreement pattern because I matched all 30 staff labels. The staff rules were specific enough for me to apply consistently, especially the distinction between a load-bearing fact for `analysis`, an unsupported general claim for `hot_take`, and an immediate personal response for `reaction`. This does not prove my JRPG taxonomy is perfect, but it gives me no evidence that general rule-following inconsistency is what caused the model's poor `analysis` and `request` scores.
 
 ---
 
